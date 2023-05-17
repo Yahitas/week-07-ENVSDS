@@ -1,0 +1,95 @@
+---
+title: "Untitled"
+format: html
+execute: 
+  warning: false 
+  message: false
+---
+
+## Quarto
+
+Quarto enables yo
+
+#set up
+
+```{r liraries}
+library(tidyverse)
+library(here)
+library(lterdatasampler)
+
+library(performance)
+library(broom)
+library(flextable)
+library(ggeffects)
+library(car)
+library(naniar)
+```
+
+#linear models
+
+How does stem length *predict* stem dry mass?
+
+```{r filtering-data}
+maples_data <- hbr_maples %>% 
+  filter(year == 2003 & watershed =="Reference")#to replace & or ,
+
+```
+
+Visualizing missing data:
+
+```{r missing-data-vis}
+gg_miss_var(maples_data)
+```
+
+Create an exploratory data visualization:
+
+```{r explore-data-vis}
+ggplot(data=maples_data, aes(x = stem_length, y = stem_dry_mass))+ 
+  geom_point()
+```
+
+Lets try a model:
+
+```{r linear-model-maples}
+maples_model <- lm(stem_dry_mass ~ stem_length, data = maples_data)
+maples_model
+```
+
+Check assumptions:
+
+1.  Linear relationship between variables: yes! (used the exploratory data visualization to check that)
+2.  independence of errors: yes! (making that assumption based on how the data was collected)
+3.  homeskedasticity of errors: yes! (making the decision from residuals vs fitted plot/scale - location plots)
+4.   normally distributed errors: yes! (looking at QQ plot of residuals)
+
+```{r checking-assumptions}
+par(mfrow = c(2, 2))
+plot(maples_model)
+
+
+```
+
+turning off the 2x2 grid
+
+```{r turning-off-the-grid, results = FALSE}
+dev.off()
+```
+
+u to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
